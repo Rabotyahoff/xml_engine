@@ -1,0 +1,39 @@
+@charset "utf-8";
+/* CSS Document */
+ 
+input.load{
+	background: #ECEDEF url(../img/bike/load16.gif) left no-repeat;
+} 
+ 
+div.autoselect_container{
+  padding: 2px 2px 2px 2px;
+  border: 1px solid #CCCCCC;
+	height:200px;
+	overflow-y:auto;
+	position: absolute;
+	background-color: white;
+	display:none;
+}
+
+div.autoselect_container div.option{
+  padding: 2px 2px 2px 16px;
+	display: none;
+}
+div.autoselect_container div.visible{
+  display: block;
+}
+div.autoselect_container div.over{
+	background-color:#DEEDF8;
+}
+
+div.autoselect_container div.selected{
+	border: 1px solid #6BA5D1;
+}
+div.autoselect_container span.sel_ico{
+  float:left;
+  margin-left:-16px;
+}
+ 
+.hand {
+	cursor: pointer;
+}

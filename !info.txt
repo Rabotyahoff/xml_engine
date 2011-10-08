@@ -1,0 +1,11 @@
+debug_cache=1 - дебаг кеша
+debug_cache={cache_class} - дебаг определённого кеша
+
+debug_memcache_flush=1 - сбросить мемкеш
+
+debug_xsl=1 - дебаг xsl-преобразований, вывод xml-дерева
+
+debug_data=1 - дебаг sql-запросов класса a_data
+debug_data={data_class} - дебаг запросов заданного класса
+
+debug_db=1 - дебаг запросов к базе через c_db
