@@ -654,13 +654,11 @@ class c_xml_node{
   }
 
   static function dump($xml, $nohead=false,$charset='UTF-8'){
-    return c_xml_node::transform('xmlDump.xsl',$xml,null,false,$nohead,$charset);
+    return c_xml_node::transform('xmlDump.xsl',$xml,null,$charset,$nohead);
   }
 
   static function transform($xsl_file, $xml, $params=null,$charset='UTF-8',$nohead=false){
     global $o_global;
-
-    //if (strtolower(substr($xsl_file,-4))!='.xsl') $xsl_file.='.xsl';
     $ent = '<!DOCTYPE page [
         <!ENTITY nbsp   "&#160;">
         <!ENTITY copy   "&#169;">
@@ -704,6 +702,7 @@ class c_xml_node{
     }
     $inputdom = new DomDocument();
     $inputdom->substituteEntities = true;
+
     $inputdom->loadXML($xml);
     $proc->importStyleSheet($xsl);
     $res = $proc->transformToXML($inputdom);

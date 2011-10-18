@@ -255,8 +255,8 @@ function run_site(){
         if (is_array($o_global->curr_page['keywords'])) $params['keywords']=$o_global->curr_page['keywords']['.'];
         else $params['keywords']=$o_global->curr_page['keywords'];
 
-        if (is_array($o_global->curr_page['theme'])) $out_result=xsl_out($o_global->curr_page['theme']['.'].'.xsl','page',$dta, false, $params, false, false);
-        else $out_result=xsl_out($o_global->curr_page['theme'].'.xsl','page',$dta, false, $params, false, false);
+        if (is_array($o_global->curr_page['theme'])) $out_result=xsl_out($o_global->curr_page['theme']['.'],'page',$dta, false, $params, false, false);
+        else $out_result=xsl_out($o_global->curr_page['theme'],'page',$dta, false, $params, false, false);
       }
     }
     else {
@@ -264,7 +264,7 @@ function run_site(){
       $params['title']=$o_global->curr_page['title']['.'];
       $params['description']=$o_global->curr_page['description']['.'];
       $params['keywords']=$o_global->curr_page['keywords']['.'];
-      $out_result=xsl_out($o_global->curr_page['theme']['.'].'.xsl','page',array(), false, $params, false, false);
+      $out_result=xsl_out($o_global->curr_page['theme']['.'],'page',array(), false, $params, false, false);
     }
 
     /*Begin сохраним кеш*/
