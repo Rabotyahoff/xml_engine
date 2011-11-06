@@ -314,6 +314,7 @@ abstract class a_sub_handler implements i_handler{
 	 * @return a_sub_handler
 	 */
 	static function load($page_object, $path, $sub_handler ,$is_auto_process=true){
+	  global $o_global;
 	  $sub_handler_class_name='s_'.$sub_handler;
 	  load_handler($path.'/'.$sub_handler_class_name);
 
@@ -321,7 +322,7 @@ abstract class a_sub_handler implements i_handler{
 	  $page_object->handler->sub_handlers[$sub_handler_class_name]=$sub_handler_object;
 	  if ($is_auto_process){
 	    $sub_handler_object->common_process();
-	  	if ($_REQUEST['ajax']==1) $sub_handler_object->ajax_process();
+	  	if ($o_global->is_ajax) $sub_handler_object->ajax_process();
 	  	else $sub_handler_object->process();
 	  }
 	  return $sub_handler_object;
