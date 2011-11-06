@@ -151,6 +151,8 @@ function run_site(){
   if ($url_params[0]=='res'){
     //для ресурсов сразу отдаём 404
     header("HTTP/1.0 404 Not Found");
+    /*$tmp=$o_global->site_root.implode('/',$url_params);
+    echo file_get_contents($tmp);*/
     exit();
   }
   do {
