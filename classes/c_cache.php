@@ -46,6 +46,28 @@ class c_filecache extends a_cache implements i_cache{
     file_put_contents($o_global->cache_site_root.$hash,$str);
   }
 
+  function set_img($hash, $im, $ext){
+    global $o_global;
+    $res=true;
+    $file_name=$o_global->cache_site_root.$hash;
+    switch (mb_strtolower($ext)){
+      case 'jpeg':
+      case 'jpg':
+        imagejpeg($im, $file_name);
+      break;
+      case 'png':
+        imagepng($im, $file_name);
+      break;
+      case 'gif':
+        imagegif($im, $file_name);
+      break;
+      default:
+        $res=false;
+      break;
+    }
+    return $res;
+  }
+
   function get($hash){
     global $o_global;
     $path=$o_global->cache_site_root.$hash;
