@@ -72,6 +72,7 @@ class c_xml_node{
 	 * @return c_xml_node
 	 */
 	function setName($name){
+	  $name=mb_str_replace(':','_',$name);
 		$this->name=$this->normalizeName($name);
 		return $this;
 	}
@@ -710,7 +711,7 @@ class c_xml_node{
   }
 
   /**
-   * Провернка узла на пустоту. Пустой узел может быть возвращён из getNodeByXPuth
+   * Провернка узла на пустоту. Пустой узел может быть возвращён из getNodeByXPath
    *
    * @param c_xml_node $node
    */
@@ -755,7 +756,7 @@ class c_xml_node{
    * @param String $puth (String | Array) путь без указания текущего узла 'someNode/nextNode/item[5]/label' здесь номер итема начинается с 1, как в xPath
    * @return c_xml_node
    */
-  function getNodeByXPuth($puth){
+  function getNodeByXPath($puth){
   	if (empty($puth)) return $this;
 
   	if (!is_array($puth)){
@@ -788,7 +789,7 @@ class c_xml_node{
       	}
       }
 
-  		if (!empty($child_node)) return $child_node->getNodeByPuth($puth);
+  		if (!empty($child_node)) return $child_node->getNodeByPath($puth);
   	}
   	if (is_object($child_node)) {
   		//проверим $child_node на соответствие условию $search_node_cond
@@ -800,7 +801,7 @@ class c_xml_node{
   		else {
   			$is_ok=$this->node_like_cond($child_node, $search_node_cond);
   		}
-  		if ($is_ok) return $child_node->getNodeByPuth($puth);
+  		if ($is_ok) return $child_node->getNodeByPath($puth);
   	}
 
   	$empty_node=new c_xml_node();
