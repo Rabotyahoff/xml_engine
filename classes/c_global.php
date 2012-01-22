@@ -224,7 +224,6 @@ class c_global {
     if (!is_array($screen)) $screen=explode('/',$screen);
     if ($pages===false) $pages=$this->site_array['pages'];
     $cur_screen=array_shift($screen);
-
     /*Begin собираем все экраны с именем $screen*/
     $pages_like_screen=array();
     foreach ($pages as $k=>$v){
