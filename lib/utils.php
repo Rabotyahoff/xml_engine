@@ -24,8 +24,11 @@ function show_callstack(){
 
 function redirect_to($page="/") {
   if (empty($page)) $page='/';
-  //echo "redirect to $page";show_callstack();
-  header ( 'HTTP/1.1 301 Moved Permanently' );
+  if (_GL_DEBUG===true && $_REQUEST['debug_redirect']){
+  	echo "redirect to $page";
+  	show_callstack();
+  }
+  //  header ( 'HTTP/1.1 301 Moved Permanently' );
   header ( "Location: ".$page );
   exit();
 }
