@@ -293,6 +293,12 @@ abstract class a_sub_handler implements i_handler{
    */
 	public $db;
 
+	public $xsl;//используемый шаблон страницы
+	public $xsl_params=array();//доп. параметры для XSL
+	public $is_debug=false;//дебаг контекста
+	public $h_data;//данные для подстановки в шаблон xsl. В самом конце результат преобразования заносится в h_result
+	public $h_result=null;//результат для вывода в браузер. Если он не пуст, то все данные из h_data игнорируются
+
 	/**
 	 *
 	 * @param a_handler $handler
@@ -300,6 +306,12 @@ abstract class a_sub_handler implements i_handler{
 	function __construct($handler) {
 		$this->handler=$handler;
 		$this->db=$handler->db;
+
+		$this->xsl=&$this->handler->xsl;
+		$this->xsl_params=&$this->handler->xsl_params;
+		$this->is_debug=&$this->handler->is_debug;
+		$this->h_data=&$this->handler->h_data;
+		$this->h_result=&$this->handler->h_result;
 	}
 
 	/**
