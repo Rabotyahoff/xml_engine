@@ -248,6 +248,15 @@ function run_site(){
             $dta['parts'][$part]=$o_handler->run();
           }
         }
+
+        /*устанавливаем параметры из раздела <params></params> страницы*/
+        if (is_array($o_global->curr_page['params'])){
+        	foreach ($o_global->curr_page['params'] as $k=>$itm){
+        		if (c_xml::is_system_key($k)) continue;
+        		$params[$k]=$itm['.'];
+        	}
+        }
+
         if (is_array($o_global->curr_page['title'])) $params['title']=$o_global->curr_page['title']['.'];
         else $params['title']=$o_global->curr_page['title'];
 
