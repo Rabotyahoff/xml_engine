@@ -1,4 +1,5 @@
 <?php
+
 class c_params {
   public $overwrite_params=array();
   public $is_trim=true;
@@ -6,9 +7,11 @@ class c_params {
 	private $is_only_our_host;
 	private $is_our_host;
 
-	function __construct($only_our_host=true) {
+	function __construct($only_our_host=true, $is_trim=true) {
 		$this->is_only_our_host=$only_our_host;
-    if ($only_our_host){
+		$this->is_trim=$is_trim;
+
+    if ($this->is_only_our_host){
       //test HTTP_REFERER
       if ((is_array($_SERVER))&&(array_key_exists('HTTP_REFERER',$_SERVER))) {
         $refer_page=$_SERVER['HTTP_REFERER'];
@@ -25,15 +28,11 @@ class c_params {
 	  return $this->is_our_host;
 	}
 
-	function append_params(&$mas,$param_names,$default='') {
-		if (!is_array($param_names)) $param_names=array($param_names);
-		foreach ($param_names as $name){
-		  $mas[$name]=$this->get_any_param($name,$default);
-		}
+	function overwrite($param_name, $value){
+		$this->overwrite_params[$param_name]=$value;
 	}
 
-
-	function test_param($param_value,$default='',$is_number=false,$min='',$max=''){
+	private function test_param($param_value,$default='',$is_number=false,$min='',$max=''){
     if (is_array($param_value)){
       foreach ($param_value as $key=>$val){
         $param_value[$key]=$this->test_param($val,$default,$is_number,$min,$max);
@@ -50,7 +49,7 @@ class c_params {
       if (($max!='')&&(is_numeric ( $max ))&&($param_value>$max))
         $param_value=$max;
     }
-    if ($this->is_trim) $param_value=trim($param_value);
+    if ($this->is_trim && !is_numeric($param_value)) $param_value=trim($param_value);
     return $param_value;
 	}
 
@@ -68,25 +67,23 @@ class c_params {
     return $value;
 	}
 
+	private function _get($_array, $is_test_host, $param_name,$default='',$is_number=false,$min='',$max=''){
+		if (array_key_exists($param_name,$this->overwrite_params)) return $this->test_param($this->overwrite_params[$param_name],$default,$is_number,$min,$max);
+		$param_value=$default;
+		if ($is_test_host && !$this->is_our_host) return $param_value;//if host-test is off p_is_our_host=true
+
+		if (isset ( $_array[$param_name] )) $param_value=$_array[$param_name];
+		return $this->test_param($this->quotes_remove($param_value),$default,$is_number,$min,$max);
+	}
+
 	/**
-	 * Read POST, GET
+	 * Read $_REQUEST
 	 * Don't test host!
 	 *
 	 * @return string
 	 */
-  function get_any_param($param_name,$default='',$is_number=false,$min='',$max='') {
-    if (array_key_exists($param_name,$this->overwrite_params)) return $this->test_param($this->overwrite_params[$param_name],$default,$is_number,$min,$max);
-    $param_value=$default;
-
-    //if (!$this->p_is_our_host) return $default;//if host-test is off p_is_our_host=true
-    if (isset ( $_POST [$param_name] )) {
-      $param_value=$_POST [$param_name];
-    } else {
-      if (isset ( $_GET [$param_name] ))
-       $param_value=$_GET [$param_name];
-    }
-
-    return $this->test_param($this->quotes_remove($param_value),$default,$is_number,$min,$max);
+  function get_any_param($param_name, $default='', $is_number=false, $min='', $max='') {
+    return $this->_get($_REQUEST, false, $param_name,$default, $is_number, $min, $max);
   }
 
   function get_any_params($param_names=array(),$default='',$is_number=false,$min='',$max=''){
@@ -99,17 +96,12 @@ class c_params {
   }
 
 	/**
-	 * Read POST, GET
+	 * Read $_REQUEST
 	 *
 	 * @return param-value
 	 */
   function get_param($param_name,$default='',$is_number=false,$min='',$max='') {
-    if (array_key_exists($param_name,$this->overwrite_params)) return $this->test_param($this->overwrite_params[$param_name],$default,$is_number,$min,$max);
-
-    if (!$this->is_our_host) return $default;//if host-test is off p_is_our_host=true
-
-
-    return $this->get_any_param($param_name,$default,$is_number,$min,$max);
+    return $this->_get($_REQUEST, true, $param_name,$default, $is_number, $min, $max);
   }
 
 	/**
@@ -118,15 +110,7 @@ class c_params {
 	 * @return param-value
 	 */
   function get_param_POST($param_name,$default='',$is_number=false,$min='',$max='') {
-    if (array_key_exists($param_name,$this->overwrite_params)) return $this->test_param($this->overwrite_params[$param_name],$default,$is_number,$min,$max);
-    $param_value=$default;
-    if (!$this->is_our_host) return $default;//if host-test is off p_is_our_host=true
-
-
-    if (isset ( $_POST [$param_name] ))
-      $param_value=$_POST [$param_name];
-
-    return $this->test_param($this->quotes_remove($param_value),$default,$is_number,$min,$max);
+    return $this->_get($_POST, true, $param_name,$default, $is_number, $min, $max);
   }
 
 	/**
@@ -135,22 +119,15 @@ class c_params {
 	 * @return param-value
 	 */
   function get_param_GET($param_name,$default='',$is_number=false,$min='',$max='') {
-    if (array_key_exists($param_name,$this->overwrite_params)) return $this->test_param($this->overwrite_params[$param_name],$default,$is_number,$min,$max);
-    $param_value=$default;
-    if (!$this->is_our_host) return $default;//if host-test is off p_is_our_host=true
-
-    if (isset ( $_GET [$param_name] ))
-     $param_value=$_GET [$param_name];
-
-    return $this->test_param($this->quotes_remove($param_value),$default,$is_number,$min,$max);
+    return $this->_get($_GET, true, $param_name, $default, $is_number, $min, $max);
   }
 
-  function get_params_to_line($param_names=array()){
+  function get_params_to_line($param_names=array(), $delim='&'){
     $res=array();
     foreach ($param_names as $param_name){
       $res[]=$param_name.'='.$this->get_any_param($param_name);
     }
-    return implode('&',$res);
+    return implode($delim,$res);
   }
 
   function get_params_POST($param_names=array(),$default='',$is_number=false,$min='',$max=''){
@@ -161,6 +138,6 @@ class c_params {
     }
     return $res;
   }
-}//class
+}
 
 
