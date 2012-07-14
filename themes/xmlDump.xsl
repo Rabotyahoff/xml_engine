@@ -393,13 +393,21 @@
     </DIV>
   </xsl:template>
   
+  <xsl:variable name="root_id" select="generate-id(//node())"></xsl:variable>
+  
   <!-- Template for elements with element children -->
   <xsl:template match="*[*]">
+    <xsl:variable name="test1" select="$root_id"/>
+    <xsl:variable name="test2" select="generate-id(.)"/>
+    
     <DIV class="xmldump_e">
       <DIV class="xmldump_c" STYLE="margin-left:1em;text-indent:-2em; ">
         <A href="javascript: void(0)" onclick="return false" onfocus="h()" class="xmldump_b">
-        <xsl:if test="generate-id(//node()) != generate-id(.)">+</xsl:if>
-        <xsl:if test="generate-id(//node()) = generate-id(.)">-</xsl:if></A>
+          <xsl:choose>
+            <xsl:when test="$test1 != $test2">+</xsl:when>
+            <xsl:otherwise>-</xsl:otherwise>
+          </xsl:choose>
+        </A>
         <xsl:text> </xsl:text>
         <SPAN class="xmldump_m">&lt;</SPAN>
         <xsl:call-template name="element-name"/>
@@ -414,7 +422,7 @@
         </div>
       </DIV>
       <DIV>
-        <xsl:if test="generate-id(//node()) != generate-id(.)">
+        <xsl:if test="$test1 != $test2">
           <xsl:attribute name="style">display:none;</xsl:attribute>
         </xsl:if>
         <xsl:apply-templates/>
